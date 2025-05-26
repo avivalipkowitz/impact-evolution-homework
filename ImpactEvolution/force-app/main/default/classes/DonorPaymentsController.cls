@@ -1,15 +1,5 @@
 public with sharing class DonorPaymentsController {
     
-    @AuraEnabled(cacheable=true)
-    public static List<Contact> getContactsWithPayments() {
-        return [
-            SELECT Id, Name, Total_Payments__c, Most_Recent_Payment_Date__c,
-                   (SELECT Id, Amount__c, Payment_Date__c, Project__r.Name 
-                    FROM Payments__r)
-            FROM Contact
-            WHERE Id IN (SELECT Contact__c FROM Payment__c)
-        ];
-    }
 
     @AuraEnabled
     public static void savePayments(List<Payment__c> payments) {

@@ -7,7 +7,7 @@ import updatePayments from '@salesforce/apex/DonorPaymentsController.updatePayme
 
 
 export default class DonorPayments extends LightningElement {
-    console.log('IN DONOR PAYMENTS LIGHTNING ELEMENT');
+
     
     draftValuesMap = {};
     @track donors;

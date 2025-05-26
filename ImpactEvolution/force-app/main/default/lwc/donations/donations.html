@@ -1,3 +1,25 @@
 <template>
-    
+    <lightning-card title="Donations">
+        <template if:true={donors}>
+            <template for:each={donors} for:item="donor">
+                <div key={donor.contactId} class="slds-box slds-m-around_small">
+                    <h3 class="slds-text-heading_small">{donor.name}</h3>
+                    <p><strong>Total Payments:</strong> ${donor.totalAmount}</p>
+                    <p><strong>Most Recent Payment:</strong> {donor.mostRecentDate}</p>
+                    <p><strong>Payment History:</strong> </p>
+
+                    <lightning-datatable
+                        key-field="Id"
+                        data={donor.payments}
+                        columns={columns}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </div>
+            </template>
+        </template>
+
+        <template if:true={error}>
+            <p class="slds-text-color_error">Error: {error}</p>
+        </template>
+    </lightning-card>
 </template>

@@ -36,7 +36,7 @@ public with sharing class DonorPaymentsController {
             paymentsByContact.get(payment.Contact__c).add(payment);
         }
 
-        // 2. Query contact info
+        // 2. Query contact info to get most recent payment date and total amount
         List<Contact> contacts = [SELECT Id, Name FROM Contact WHERE Id IN :contactIds];
 
         for (Contact c : contacts) {
@@ -50,14 +50,14 @@ public with sharing class DonorPaymentsController {
                     mostRecent = p.Payment_Date__c;
                 }
             }
-
+            System.Debug('MOST RECENT: '+ mostRecent);
             donors.add(new ContactWrapper(c.Id, c.Name, totalAmount, mostRecent, contactPayments));
         }
         System.Debug('Donors: ' + donors);
         return donors;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=false) 
     public static void updatePayments(List<Payment__c> updatedPayments) {
         if (updatedPayments == null || updatedPayments.isEmpty()) return;
 

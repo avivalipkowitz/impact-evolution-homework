@@ -11,11 +11,21 @@ export default class DonorPayments extends LightningElement {
     
     draftValuesMap = {};
     @track donors;
+    
     columns = [
         { label: 'Amount', fieldName: 'Amount__c', type: 'currency', editable: true },
         { label: 'Payment Date', fieldName: 'Payment_Date__c', type: 'date', editable: true },
         { label: 'Project Name', fieldName: 'projectName', type: 'text' } 
     ];
+
+    showToast(title, message, variant) {
+        const evt = new ShowToastEvent({
+            title,
+            message,
+            variant,
+        });
+        this.dispatchEvent(evt);
+    }
 
     @wire(getDonorsWithPayments)
     wiredDonors({ value }) {
@@ -28,7 +38,7 @@ export default class DonorPayments extends LightningElement {
                 console.log('has error: ' + error);
                 // handle error
             }
-        }
+    }
         // this.wiredDonorResult = value; 
         // const {error, data} = value || {};
         // if (data) {
@@ -78,8 +88,6 @@ export default class DonorPayments extends LightningElement {
     
 
     handleSave(event) {
-        
-
         const contactId = event.target.dataset.contactId;
         const draftValues = this.draftValuesMap[contactId] || [];
         console.log('DRAFTVALUESMAP: ' + this.draftValuesMap);
@@ -106,14 +114,8 @@ export default class DonorPayments extends LightningElement {
             });
     }
 
-    showToast(title, message, variant) {
-        const evt = new ShowToastEvent({
-            title,
-            message,
-            variant,
-        });
-        this.dispatchEvent(evt);
-    }
+
+   
 
 
 }

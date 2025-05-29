@@ -5,14 +5,17 @@
                 <div key={donor.contactId} class="slds-box slds-m-around_small">
                     <h3 class="slds-text-heading_small">{donor.name}</h3>
                     <p><strong>Total Payments:</strong> ${donor.totalAmount}</p>
-                    <p><strong>Most Recent Payment:</strong> {donor.mostRecentDate}</p>
+                    <p><strong>Most Recent Payment: </strong><lightning-formatted-date-time value={donor.mostRecentDate}></lightning-formatted-date-time></p>
                     <p><strong>Payment History:</strong> </p>
 
                     <lightning-datatable
                         key-field="Id"
                         data={donor.payments}
                         columns={columns}
-                        hide-checkbox-column>
+                        draft-values={donor.draftValues}
+                        data-contact-id={donor.contactId}
+                        hide-checkbox-column
+                        onsave={handleSave}>
                     </lightning-datatable>
                 </div>
             </template>

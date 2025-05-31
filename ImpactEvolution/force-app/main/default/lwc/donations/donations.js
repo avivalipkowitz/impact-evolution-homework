@@ -21,8 +21,7 @@ export default class Donations extends LightningElement {
     @wire(getDonorsWithPayments)
     wiredDonors({ error, data }) {
         if (data) {
-            console.log('Donors data received:', data);
-    
+
             this.donors = data.map(donor => {
                 const paymentsWithProject = donor.payments.map(payment => {
                     const projectName = payment.Project__r ? payment.Project__r.Name : '—';
@@ -33,16 +32,11 @@ export default class Donations extends LightningElement {
                     return paymentWithProject;
                 });
     
-                // ✅ Log the payment IDs for debugging
-                console.log(`Payments for donor ${donor.contactId}:`, paymentsWithProject.map(p => p.Id));
-                console.log('Payments:', donor.payments.map(p => p.Id));
-
                 const donorWithDraftValues = {
                     ...donor,
                     payments: paymentsWithProject,
                     draftValues: []
                 };
-                console.log(`Draft values initialized for donor ${donor.contactId}:`, donorWithDraftValues.draftValues);
 
                 return donorWithDraftValues;
             });
@@ -55,8 +49,6 @@ export default class Donations extends LightningElement {
     }
     
     handleSave(event){
-        console.log('this.showToast exists?', typeof this.showToast); // should log: "function"
-
         try {            
             const contactId = event.target.dataset.contactId;
             const draftValues = event.detail.draftValues;
@@ -65,8 +57,6 @@ export default class Donations extends LightningElement {
             console.warn('No draft values to save.');
             return;
         }
-        console.log('Saving for contact:', contactId, draftValues);
-
     
         updatePayments({ updatedPayments: draftValues })
             .then(() => {
@@ -84,7 +74,6 @@ export default class Donations extends LightningElement {
         }
     }
     showToast(title, message, variant) {
-        console.log('In SHOWTOAST:');
         const evt = new ShowToastEvent({
             title,
             message,

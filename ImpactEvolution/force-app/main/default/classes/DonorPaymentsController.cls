@@ -50,10 +50,8 @@ public with sharing class DonorPaymentsController {
                     mostRecent = p.Payment_Date__c;
                 }
             }
-            System.Debug('MOST RECENT: '+ mostRecent);
             donors.add(new ContactWrapper(c.Id, c.Name, totalAmount, mostRecent, contactPayments));
         }
-        System.Debug('Donors: ' + donors);
         return donors;
     }
 

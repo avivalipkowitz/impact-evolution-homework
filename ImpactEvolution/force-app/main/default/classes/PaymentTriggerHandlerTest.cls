@@ -37,7 +37,6 @@ private class PaymentTriggerHandlerTest {
         // Assert rollup result on Project
         Project__c updatedProj = [SELECT Total_Payments__c FROM Project__c WHERE Id = :proj.Id];
         System.assertEquals(500, updatedProj.Total_Payments__c);
-        System.assertEquals(Date.today(), updatedContact.Most_Recent_Payment_Date__c);
 
         // Assert rollup result on Contact
         Contact updatedContact = [SELECT Total_Payments__c, Most_Recent_Payment_Date__c FROM Contact WHERE Id = :testContact2.Id];

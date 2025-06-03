@@ -1,4 +1,4 @@
-public with sharing class DonorPaymentsController {
+public with sharing class DonationsController {
     
 
     @AuraEnabled

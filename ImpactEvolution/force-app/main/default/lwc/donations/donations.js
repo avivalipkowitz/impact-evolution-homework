@@ -1,6 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
-import getDonorsWithPayments from '@salesforce/apex/DonorPaymentsController.getDonorsWithPayments';
-import updatePayments from '@salesforce/apex/DonorPaymentsController.updatePayments';
+import getDonorsWithPayments from '@salesforce/apex/DonationsController.getDonorsWithPayments';
+import updatePayments from '@salesforce/apex/DonationsController.updatePayments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 

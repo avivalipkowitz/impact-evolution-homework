@@ -1,5 +1,5 @@
 import { LightningElement, wire, track } from 'lwc';
-import getDonorsWithPayments from '@salesforce/apex/DonationsController.getDonorsWithPayments';
+import getContactsWithPayments from '@salesforce/apex/DonationsController.getContactsWithPayments';
 import updatePayments from '@salesforce/apex/DonationsController.updatePayments';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
@@ -18,7 +18,7 @@ export default class Donations extends LightningElement {
     ];
 
 
-    @wire(getDonorsWithPayments)
+    @wire(getContactsWithPayments)
     wiredDonors({ error, data }) {
         if (data) {
 

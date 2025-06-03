@@ -18,7 +18,7 @@ public with sharing class DonationsController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<ContactWrapper> getDonorsWithPayments() {
+    public static List<ContactWrapper> getContactsWithPayments() {
         List<ContactWrapper> donors = new List<ContactWrapper>();
 
         // 1. Query all contacts who have made payments

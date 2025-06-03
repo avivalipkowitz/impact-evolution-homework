@@ -7,6 +7,11 @@ public with sharing class DonationsController {
     }
 
     @AuraEnabled
+    public static void insertPayment(Payment__c payment) {
+        insert payment;
+    }
+
+    @AuraEnabled
     public static Payment__c createPayment(Payment__c newPayment) {
         insert newPayment;
         return newPayment;

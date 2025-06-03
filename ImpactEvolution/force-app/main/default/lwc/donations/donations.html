@@ -7,6 +7,11 @@
                     <p><strong>Total Payments:</strong> ${donor.totalAmount}</p>
                     <p><strong>Most Recent Payment: </strong><lightning-formatted-date-time value={donor.mostRecentDate}></lightning-formatted-date-time></p>
                     <p><strong>Payment History:</strong> </p>
+                    <lightning-button 
+                        label="Add Payment" 
+                        data-contact-id={donor.contactId}
+                        onclick={handleAddPayment}>
+                    </lightning-button>
 
                     <lightning-datatable
                         key-field="Id"
@@ -21,8 +26,40 @@
             </template>
         </template>
 
+        <template if:true={showAddPaymentModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-modal__title">Add New Payment</h2>
+                    </header>
+                    <div class="slds-modal__content">
+                        <lightning-input label="Amount" type="number" value={newPayment.Amount__c} onchange={handleAmountChange}></lightning-input>
+                        <lightning-input label="Payment Date" type="date" value={newPayment.Payment_Date__c} onchange={handleDateChange}></lightning-input>
+                        <lightning-combobox
+                            name="project"
+                            label="Project"
+                            value={newPaymentProjectId}
+                            placeholder="Select Project"
+                            options={projectOptions}
+                            onchange={handleProjectChange}>
+                    </lightning-combobox>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" label="Cancel" onclick={handleModalCancel}></lightning-button>
+                        <lightning-button variant="brand" label="Save" onclick={handleSaveNewPayment}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
         <template if:true={error}>
             <p class="slds-text-color_error">Error: {error}</p>
         </template>
+
+
+
+
+        
     </lightning-card>
 </template>

@@ -4,6 +4,7 @@ import updatePayments from '@salesforce/apex/DonationsController.updatePayments'
 import createPayment from '@salesforce/apex/DonationsController.createPayment';
 import insertPayment from '@salesforce/apex/DonationsController.insertPayment';
 import deletePayment from '@salesforce/apex/DonationsController.deletePayment';
+import getProjects from '@salesforce/apex/DonationsController.getProjects';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
@@ -14,6 +15,7 @@ export default class Donations extends LightningElement {
     @track donors;
     @track error;
     @track showAddPaymentModal = false;
+    @track projectOptions;
     @track newPayment = {
         Amount__c: null,
         Payment_Date__c: null,
@@ -21,6 +23,7 @@ export default class Donations extends LightningElement {
         Contact__c: null
     };
 
+    wiredDonorsResult;
 
     columns = [
         { label: 'Amount', fieldName: 'Amount__c', type: 'currency', editable: true},
@@ -39,18 +42,22 @@ export default class Donations extends LightningElement {
           }
     ];
 
-    newPaymentProjectId = '';
 
-    projectOptions = [
-        // To DO: Load dynamically
-        { label: 'Project A', value: 'a0123456789ABC' },
-        { label: 'Project B', value: 'a0987654321DEF' },
-    ];
-
+    @wire(getProjects)
+    wiredProjects({ error, data }) {
+        if (data) {
+            this.projectOptions = data.map(project => ({
+                label: project.Name,
+                value: project.Id
+            }));
+        } else if (error) {
+            console.error('Error fetching projects:', error);
+            this.showToast('Error', 'Unable to load projects', 'error');
+        }
+    }
 
 
     // Handle add/delete functionality
-
     handleAddPayment(event) {
         const contactId = event.target.dataset.contactId;
         this.newPayment = {
@@ -62,26 +69,20 @@ export default class Donations extends LightningElement {
         this.showAddPaymentModal = true;
     }
 
+
     handleSaveNewPayment() {
-        console.log('IN HANDLE SAVE NEW PAYMENT');
-        console.log("THIS.selectedcontactid: "+ this.selectedContactId);
-        console.log("THIS MAP: " + this);
-        const payment = {
-            Contact__c: this.selectedContactId,
-            Amount__c: this.newPaymentAmount,
-            Payment_Date__c: this.newPaymentDate,
-            Project__c: this.newPaymentProjectId 
-        };
+        console.log("Saving new payment: ", JSON.stringify(this.newPayment));
     
-        createPayment({ newPayment: payment })
+        createPayment({ newPayment: this.newPayment })
             .then(result => {
                 this.showToast('Success', 'New payment created', 'success');
                 this.closeModal();
-                refreshApex(this.donors);
+                return rrefreshApex(this.wiredDonorsResult); 
             })
             .catch(error => {
-                console.error('Error creating payment:', error);
-                this.showToast('Error', error.body.message, 'error');
+                console.error('Error saving new payment:', JSON.stringify(error));
+                const message = error?.body?.message || error?.message || 'Unknown error';
+                this.showToast('Error', message, 'error');
             });
     }
 
@@ -95,29 +96,12 @@ export default class Donations extends LightningElement {
         };
     }
 
-    handleModalSave() {
-        console.log('in HANDLE MODAL SAVE');
-        createPayment({ newPayment: this.newPayment })
-            .then(() => {
-                this.showToast('Success', 'Payment created successfully', 'success');
-                this.showAddPaymentModal = false;
-                this.newPayment = {
-                    Amount__c: null,
-                    Payment_Date__c: null,
-                    Project__c: null,
-                    Contact__c: null
-                };
-                
-                return refreshApex(this.donors);
-            })
-            .catch(error => {
-                console.error('Error creating payment:', error);
-                this.showToast('Error', error.body?.message || 'Unknown error', 'error');
-            });
+    closeModal(){
+        this.handleModalCancel();
     }
-                  
+      
     handleProjectChange(event) {
-        this.newPaymentProjectId = event.detail.value;
+        this.newPayment.Project__c = event.detail.value;
     }
 
     handleAmountChange(event){
@@ -128,18 +112,6 @@ export default class Donations extends LightningElement {
         this.newPayment.Payment_Date__c = event.target.value;
     }
     
-    saveNewPayment() {
-        insertPayment({ payment: this.newPayment })
-            .then(() => {
-            this.showAddPaymentModal = false;
-            this.showToast('Success', 'Payment added', 'success');
-            return refreshApex(this.donors);
-            })
-            .catch(error => {
-            this.showToast('Error adding payment', error.body.message, 'error');
-            });
-    }  
-
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
@@ -154,8 +126,12 @@ export default class Donations extends LightningElement {
         }
         deletePayment({ paymentId })
           .then(() => {
+            console.log('ROW DELETED');
             this.showToast('Success', 'Payment deleted', 'success');
-            return refreshApex(this.donors);
+            // return refreshApex(this.wiredDonorsResult); 
+            refreshApex(this.wiredDonorsResult).then(() => {
+                console.log('Refreshed donors:', JSON.stringify(this.donors));
+              });
           })
           .catch(error => {
             this.showToast('Error deleting payment', error.body.message, 'error');
@@ -166,10 +142,11 @@ export default class Donations extends LightningElement {
         
 
 
-
-
     @wire(getContactsWithPayments)
-    wiredDonors({ error, data }) {
+    wiredDonors(result) {
+        this.wiredDonorsResult = result;
+        const {data, error} = result;
+        
         if (data) {
 
             this.donors = data.map(donor => {
@@ -198,7 +175,7 @@ export default class Donations extends LightningElement {
         }
     }
     
-    handleSave(event){
+    handleInlineEditSave(event){
         try {            
             const contactId = event.target.dataset.contactId;
             const draftValues = event.detail.draftValues;
@@ -212,7 +189,7 @@ export default class Donations extends LightningElement {
             .then(() => {
                 console.log('updatePayments Apex call succeeded');
                 this.showToast('Success', 'Payments updated successfully', 'success');
-                return refreshApex(this.donors);
+                return refreshApex(this.wiredDonorsResult); 
             })
             .catch(error => {
                 console.error('Error in updatePayments:', error);

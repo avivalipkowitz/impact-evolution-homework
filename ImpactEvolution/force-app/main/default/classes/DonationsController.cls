@@ -23,6 +23,11 @@ public with sharing class DonationsController {
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<Project__c> getProjects() {
+        return [SELECT Id, Name FROM Project__c ORDER BY Name];
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<ContactWrapper> getContactsWithPayments() {
         List<ContactWrapper> donors = new List<ContactWrapper>();
 

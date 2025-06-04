@@ -20,7 +20,8 @@
                         draft-values={donor.draftValues}
                         data-contact-id={donor.contactId}
                         hide-checkbox-column
-                        onsave={handleSave}>
+                        onsave={handleInlineEditSave}
+                        onrowaction={handleRowAction}>
                     </lightning-datatable>
                 </div>
             </template>
@@ -33,12 +34,22 @@
                         <h2 class="slds-modal__title">Add New Payment</h2>
                     </header>
                     <div class="slds-modal__content">
-                        <lightning-input label="Amount" type="number" value={newPayment.Amount__c} onchange={handleAmountChange}></lightning-input>
-                        <lightning-input label="Payment Date" type="date" value={newPayment.Payment_Date__c} onchange={handleDateChange}></lightning-input>
+                        <lightning-input 
+                            label="Amount" 
+                            type="number" 
+                            value={newPayment.Amount__c} 
+                            onchange={handleAmountChange}>
+                        </lightning-input>
+                        <lightning-input 
+                            label="Payment Date" 
+                            type="date" 
+                            value={newPayment.Payment_Date__c}
+                            onchange={handleDateChange}>
+                        </lightning-input>
                         <lightning-combobox
                             name="project"
                             label="Project"
-                            value={newPaymentProjectId}
+                            value={newPayment.Project__c}
                             placeholder="Select Project"
                             options={projectOptions}
                             onchange={handleProjectChange}>

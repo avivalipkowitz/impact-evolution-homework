@@ -128,7 +128,6 @@ export default class Donations extends LightningElement {
           .then(() => {
             console.log('ROW DELETED');
             this.showToast('Success', 'Payment deleted', 'success');
-            // return refreshApex(this.wiredDonorsResult); 
             refreshApex(this.wiredDonorsResult).then(() => {
                 console.log('Refreshed donors:', JSON.stringify(this.donors));
               });
@@ -142,25 +141,30 @@ export default class Donations extends LightningElement {
 
     @wire(getContactsWithPayments)
     wiredDonors(result) {
-      this.wiredDonorsResult = result; // store raw result
-    
-      if (result.data) {
-        this.donors = result.data.map(donor => {
-          const paymentsWithProject = donor.payments.map(payment => {
-            const projectName = payment.Project__r ? payment.Project__r.Name : '—';
-            return { ...payment, projectName };
-          });
-          return {
-            ...donor,
-            payments: paymentsWithProject,
-            draftValues: []
-          };
-        });
-        this.error = undefined;
-      } else if (result.error) {
-        this.error = result.error;
-        this.donors = undefined;
-      }
+        this.wiredDonorsResult = result; 
+        
+        if (result.data) {
+            // result.data is a list of ContactWrapper objects
+            this.donors = result.data.map(donor => {
+                // Each donor has a list of payments. For each payment, 
+                // extract the Project name (if available) into the paymentsWithProject array.
+                const paymentsWithProject = donor.payments.map(payment => {
+                    const projectName = payment.Project__r ? payment.Project__r.Name : '—';
+                    // include all the original fields in theh payment object, and add the projectName field
+                    return { ...payment, projectName };
+                });
+                // for each donor, add a field of payments by project, and a draftValues array for editing functionality
+                return {
+                    ...donor,
+                    payments: paymentsWithProject,
+                    draftValues: []
+            };
+            });
+            this.error = undefined;
+        } else if (result.error) {
+            this.error = result.error;
+            this.donors = undefined;
+        }
     }
     
     handleInlineEditSave(event){

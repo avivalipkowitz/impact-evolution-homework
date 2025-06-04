@@ -31,7 +31,7 @@ public with sharing class DonationsController {
     public static List<ContactWrapper> getContactsWithPayments() {
         List<ContactWrapper> donors = new List<ContactWrapper>();
 
-        // 1. Query all contacts who have made payments
+        // 1. Query all contacts who have made payments, building a set of Contact IDs and a map of Payments by contact
         Set<Id> contactIds = new Set<Id>();
         Map<Id, List<Payment__c>> paymentsByContact = new Map<Id, List<Payment__c>>();
 
@@ -46,7 +46,10 @@ public with sharing class DonationsController {
             paymentsByContact.get(payment.Contact__c).add(payment);
         }
 
-        // 2. Query contact info to get most recent payment date and total amount
+        // 2. Query Contact data to get most recent payment date and total payment amount for all Contacts in Set.
+        //    Then create a wrapper object to combine Contact data with payment totals and most recent date.
+        // TODO: could this be simplified? Could I just add `WHERE Contact__c != null` again
+        //      instead of building the set above?
         List<Contact> contacts = [SELECT Id, Name FROM Contact WHERE Id IN :contactIds];
 
         for (Contact c : contacts) {

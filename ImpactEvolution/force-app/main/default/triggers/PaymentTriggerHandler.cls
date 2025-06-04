@@ -13,10 +13,10 @@ public class PaymentTriggerHandler {
     }
 
     private static void updateContactRollups(Set<Id> contactIds) {
-        //Make a new map from Contact ID to AggregateResult
+        //Make a new map from Contact ID to AggregateResult because of the SUM operator
         Map<Id, AggregateResult> results = new Map<Id, AggregateResult>();
 
-        // Query the database for the AggregateResult objects based on the contactIDs passed in, and add the results to the results map
+        // Query the database for the AggregateResult objects based on the contactIDs parameter, and add the results to the results map
         for (AggregateResult ar : [
             SELECT Contact__c, SUM(Amount__c) totalAmount, MAX(Payment_Date__c) latestDate 
             FROM Payment__c 
@@ -26,10 +26,10 @@ public class PaymentTriggerHandler {
             results.put((Id) ar.get('Contact__c'), ar);
         }
 
-        // Instatintiate in-memory Contact object to be modified and updated to Salesforce later based on ID number
         List<Contact> contactsToUpdate = new List<Contact>();
 
         for (Id contactId : contactIds) {
+            // Instantiate in-memory Contact object to be modified and updated to Salesforce later based on ID number            
             Contact c = new Contact(Id = contactId);
             AggregateResult ar = results.get(contactId);
             c.Total_Payments__c = ar != null ? (Decimal) ar.get('totalAmount') : 0;

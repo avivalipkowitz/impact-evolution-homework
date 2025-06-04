@@ -2,10 +2,6 @@
 
 Lightning Web Component to track Payments to Project
 
-Example org:
-Username: aviva956@agentforce.com
-Pw: Testingtesting123
-
 App is called "Donations"
 
 

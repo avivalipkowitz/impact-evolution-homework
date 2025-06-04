@@ -113,6 +113,7 @@ export default class Donations extends LightningElement {
         this.newPayment.Payment_Date__c = event.target.value;
     }
     
+    // listen for delete row action and fire handler
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
@@ -127,7 +128,6 @@ export default class Donations extends LightningElement {
         }
         deletePayment({ paymentId })
           .then(() => {
-            console.log('ROW DELETED');
             this.showToast('Success', 'Payment deleted', 'success');
             refreshApex(this.wiredDonorsResult).then(() => {
                 console.log('Refreshed donors:', JSON.stringify(this.donors));

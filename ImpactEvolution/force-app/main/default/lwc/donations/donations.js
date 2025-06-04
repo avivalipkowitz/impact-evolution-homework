@@ -77,7 +77,7 @@ export default class Donations extends LightningElement {
             .then(result => {
                 this.showToast('Success', 'New payment created', 'success');
                 this.closeModal();
-                return rrefreshApex(this.wiredDonorsResult); 
+                return refreshApex(this.wiredDonorsResult); 
             })
             .catch(error => {
                 console.error('Error saving new payment:', JSON.stringify(error));
@@ -139,41 +139,66 @@ export default class Donations extends LightningElement {
     }
 
 
-        
-
 
     @wire(getContactsWithPayments)
     wiredDonors(result) {
-        this.wiredDonorsResult = result;
-        const {data, error} = result;
-        
-        if (data) {
-
-            this.donors = data.map(donor => {
-                const paymentsWithProject = donor.payments.map(payment => {
-                    const projectName = payment.Project__r ? payment.Project__r.Name : '—';
-                    const paymentWithProject = {
-                        ...payment,
-                        projectName: projectName
-                    };
-                    return paymentWithProject;
-                });
+      this.wiredDonorsResult = result; // store raw result
     
-                const donorWithDraftValues = {
-                    ...donor,
-                    payments: paymentsWithProject,
-                    draftValues: []
-                };
-
-                return donorWithDraftValues;
-            });
-    
-            this.error = undefined;
-        } else if (error) {
-            this.error = error;
-            this.donors = undefined;
-        }
+      if (result.data) {
+        this.donors = result.data.map(donor => {
+          const paymentsWithProject = donor.payments.map(payment => {
+            const projectName = payment.Project__r ? payment.Project__r.Name : '—';
+            return { ...payment, projectName };
+          });
+          return {
+            ...donor,
+            payments: paymentsWithProject,
+            draftValues: []
+          };
+        });
+        this.error = undefined;
+      } else if (result.error) {
+        this.error = result.error;
+        this.donors = undefined;
+      }
     }
+
+
+        
+
+
+    // @wire(getContactsWithPayments)
+    // wiredDonors(result) {
+    //     this.wiredDonorsResult = result;
+    //     const {data, error} = result;
+        
+    //     if (data) {
+
+    //         this.donors = data.map(donor => {
+    //             const paymentsWithProject = donor.payments.map(payment => {
+    //                 const projectName = payment.Project__r ? payment.Project__r.Name : '—';
+    //                 const paymentWithProject = {
+    //                     ...payment,
+    //                     projectName: projectName
+    //                 };
+    //                 return paymentWithProject;
+    //             });
+    
+    //             const donorWithDraftValues = {
+    //                 ...donor,
+    //                 payments: paymentsWithProject,
+    //                 draftValues: []
+    //             };
+
+    //             return donorWithDraftValues;
+    //         });
+    
+    //         this.error = undefined;
+    //     } else if (error) {
+    //         this.error = error;
+    //         this.donors = undefined;
+    //     }
+    // }
     
     handleInlineEditSave(event){
         try {            

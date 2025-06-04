@@ -7,12 +7,6 @@
                     <p><strong>Total Payments:</strong> ${donor.totalAmount}</p>
                     <p><strong>Most Recent Payment: </strong><lightning-formatted-date-time value={donor.mostRecentDate}></lightning-formatted-date-time></p>
                     <p><strong>Payment History:</strong> </p>
-                    <lightning-button 
-                        label="Add Payment" 
-                        data-contact-id={donor.contactId}
-                        onclick={handleAddPayment}>
-                    </lightning-button>
-
                     <lightning-datatable
                         key-field="Id"
                         data={donor.payments}
@@ -23,6 +17,11 @@
                         onsave={handleInlineEditSave}
                         onrowaction={handleRowAction}>
                     </lightning-datatable>
+                    <lightning-button 
+                    label="Add Payment" 
+                    data-contact-id={donor.contactId}
+                    onclick={handleAddPayment}>
+                </lightning-button>
                 </div>
             </template>
         </template>

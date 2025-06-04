@@ -162,43 +162,6 @@ export default class Donations extends LightningElement {
         this.donors = undefined;
       }
     }
-
-
-        
-
-
-    // @wire(getContactsWithPayments)
-    // wiredDonors(result) {
-    //     this.wiredDonorsResult = result;
-    //     const {data, error} = result;
-        
-    //     if (data) {
-
-    //         this.donors = data.map(donor => {
-    //             const paymentsWithProject = donor.payments.map(payment => {
-    //                 const projectName = payment.Project__r ? payment.Project__r.Name : '—';
-    //                 const paymentWithProject = {
-    //                     ...payment,
-    //                     projectName: projectName
-    //                 };
-    //                 return paymentWithProject;
-    //             });
-    
-    //             const donorWithDraftValues = {
-    //                 ...donor,
-    //                 payments: paymentsWithProject,
-    //                 draftValues: []
-    //             };
-
-    //             return donorWithDraftValues;
-    //         });
-    
-    //         this.error = undefined;
-    //     } else if (error) {
-    //         this.error = error;
-    //         this.donors = undefined;
-    //     }
-    // }
     
     handleInlineEditSave(event){
         try {            

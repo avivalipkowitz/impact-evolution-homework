@@ -7,20 +7,20 @@ If logging into Aviva's dev instance: navigate straight to the app "Donations" a
 
 If starting from scratch in your own dev instance:
 - Create custom objects/fields by hand in Salesforce (sorry):
-* Project (Project__c):
-    * Total_Payments__c (Currency, default 0)
-* Payment (Payment__c):
-    * Payment_Date__c (Date)
-    * Amount__c (Currency)
-    * Project__c (Lookup to Project)
-    * Contact__c (Lookup to Contact)
-* Contact (Standard Object):
-    * Total_Payments__c (Currency, default 0)
-    * Most_Recent_Payment_Date__c (Date)
+   * Project (Project__c):
+       * Total_Payments__c (Currency, default 0)
+   * Payment (Payment__c):
+       * Payment_Date__c (Date)
+       * Amount__c (Currency)
+       * Project__c (Lookup to Project)
+       * Contact__c (Lookup to Contact)
+   * Contact (Standard Object):
+       * Total_Payments__c (Currency, default 0)
+       * Most_Recent_Payment_Date__c (Date)
 
-Generate sample data: run scripts/apex/createTestData.apex
+- Generate sample data: run scripts/apex/createTestData.apex
 
-Create custom LWC in Lightning App Builder (Custom component is called "Donations")
+- Create custom LWC in Lightning App Builder (Custom component is called "Donations")
 
 
 

@@ -23,6 +23,7 @@ export default class Donations extends LightningElement {
         Contact__c: null
     };
 
+    // this.wiredDonorsResult will be passed to all the refreshApex calls in this file as the UI is updated
     wiredDonorsResult;
 
     columns = [
